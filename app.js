@@ -3,9 +3,9 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const fileUpload = require("express-fileupload");
+require("dotenv").config()
 
 const filesRouter = require("./routes/filesRoute");
-const usersRouter = require("./routes/users");
 
 const app = express();
 
@@ -20,8 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", filesRouter);
-app.use("/users", usersRouter);
+app.use("/files", filesRouter);
 
 // error handler
 app.use(function (err, req, res, next) {
