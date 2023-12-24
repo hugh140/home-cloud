@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/files", filesRouter);
+app.use("/", filesRouter);
 
 // error handler
 app.use(function (err, req, res, next) {

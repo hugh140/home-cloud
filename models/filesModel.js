@@ -36,7 +36,7 @@ class FilesModel {
       );
 
     const files = fs.readdirSync(storagePath);
-    const pathSplit = path.split("\\\\");
+    const pathSplit = path.split("\\");
     const filesInfo = [];
     if (pathSplit.length > 1)
       filesInfo.push({
@@ -44,8 +44,7 @@ class FilesModel {
         url: new URL(
           join(
             process.env.SERVER_URL,
-            "files",
-            `?path=${pathSplit.slice(0, -1).join("\\\\")}`
+            `?path=${pathSplit.slice(0, -1).join("\\")}`
           )
         ),
         type: "back",
@@ -55,14 +54,15 @@ class FilesModel {
         filesInfo.push({
           name: file,
           url: new URL(
-            join(process.env.SERVER_URL, "files", `?path=${path}/${file}`)
+            join(process.env.SERVER_URL, `?path=${path}/${file}`)
           ),
+          path: join(path, file),
           type: "directory",
         });
       else
         filesInfo.push({
           name: file,
-          url: join(process.env.SERVER_URL, "storage", path, file),
+          url: new URL(join(process.env.SERVER_URL, "storage", path, file)),
           path: join(path, file),
           type: "file",
         });
@@ -75,6 +75,13 @@ class FilesModel {
     });
 
     return filesInfo;
+  }
+
+  static deleteDir(path) {
+    const storagePath = join(__dirname, "..", "public", "storage", path);
+    fs.rmSync(storagePath, { recursive: true });
+
+    return { message: "Directorio o archivo eliminado correctamente." };
   }
 }
 module.exports = FilesModel;

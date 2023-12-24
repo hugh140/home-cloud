@@ -1,0 +1,15 @@
+div(class="modal fade" id="folderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
+  div(class="modal-dialog")
+    div(class="modal-content")
+      div(class="modal-header")
+        h1(class="modal-title fs-5" id="exampleModalLabel") Crear Carpeta
+        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+      form(id="createFolder" class="p-3")
+        label(for="name" class="form-label") Escribe un nombre para la carpeta
+        input(type="text" id="name" name="name" class="form-control mb-2" placeholder="Carpeta #1" required="true")
+        br
+        div(class="modal-footer")
+          button(type="button" class="btn btn-outline-danger" data-bs-dismiss="modal") Cancelar
+          button(type="submit" class="btn btn-outline-dark") Crear carpeta
+
+script(src="js/createFolder.js")

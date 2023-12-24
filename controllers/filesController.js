@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const FilesModel = require("../models/filesModel");
+const checkFileType = require("../scripts/CheckFile");
 const { join } = require("path");
 
 class FilesController {
@@ -21,7 +22,6 @@ class FilesController {
             "No es necesario que tu dirección retroceda entre los directorios usando caracteres no permitidos."
           )
         );
-
     }
 
     const response = FilesModel.uploadFiles(files, path);
@@ -38,7 +38,7 @@ class FilesController {
       );
 
     if (!path) path = "";
-    else if (path.split("-").some((dir) => dir === ".."))
+    else if (path.split("\\").some((dir) => dir === ".."))
       next(
         createError(
           400,
@@ -55,6 +55,7 @@ class FilesController {
     let path = req.query.path;
 
     const reducedPath = join(path || " ");
+    console.log(reducedPath);
     if (
       !path ||
       reducedPath === "." ||
@@ -62,7 +63,32 @@ class FilesController {
       reducedPath === "\\"
     )
       path = "./";
-    else if (path.split("-").some((dir) => dir === ".."))
+    else if (reducedPath.split("\\").some((dir) => dir === ".."))
+      next(
+        createError(
+          401,
+          "No está permitido retroceder más allá de lo permitido."
+        )
+      );
+
+    const response = FilesModel.getFiles(path, next);
+    res.render("index", {
+      data: response,
+      checkFileType: checkFileType,
+    });
+  }
+  static deleteDir(req, res, next) {
+    let path = req.query.path;
+
+    const reducedPath = join(path || " ");
+    if (
+      !path ||
+      reducedPath === "." ||
+      reducedPath === ".\\" ||
+      reducedPath === "\\"
+    )
+      path = "./";
+    else if (path.split("\\").some((dir) => dir === ".."))
       next(
         createError(
           400,
@@ -70,7 +96,7 @@ class FilesController {
         )
       );
 
-    const response = FilesModel.getFiles(path, next);
+    const response = FilesModel.deleteDir(path);
     res.send(response);
   }
 }
