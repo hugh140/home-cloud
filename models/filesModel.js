@@ -53,17 +53,15 @@ class FilesModel {
       if (fs.lstatSync(storagePath + `/${file}`).isDirectory())
         filesInfo.push({
           name: file,
-          url: new URL(
-            join(process.env.SERVER_URL, `?path=${path}/${file}`)
-          ),
-          path: join(path, file),
+          url: new URL(join(process.env.SERVER_URL, `?path=${path}/${file}`)),
+          path: join(path, file).replaceAll("\\", "/"),
           type: "directory",
         });
       else
         filesInfo.push({
           name: file,
           url: new URL(join(process.env.SERVER_URL, "storage", path, file)),
-          path: join(path, file),
+          path: join(path, file).replaceAll("\\", "/"),
           type: "file",
         });
     });
@@ -81,7 +79,10 @@ class FilesModel {
     const storagePath = join(__dirname, "..", "public", "storage", path);
     fs.rmSync(storagePath, { recursive: true });
 
-    return { message: "Directorio o archivo eliminado correctamente." };
+    return {
+      message: "Directorio o archivo eliminado correctamente.",
+      ok: true,
+    };
   }
 }
 module.exports = FilesModel;

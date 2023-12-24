@@ -3,11 +3,11 @@ extends layout
 block content
   div.d-flex.flex-wrap.gap-2
     button(class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#folderModal" style="background-color: #EBAA28; color: white")
-      i(class="fa-solid fa-plus me-2")
+      i(class="fa-solid fa-folder me-2")
       span Nueva Carpeta
 
     label(for="file-upload" class="btn btn-sucess mb-3" style="background-color: #98EB28; color: white") 
-      i(class="fa-solid fa-plus me-2")
+      i(class="fa-solid fa-file me-2")
       span Subir Archivos
     input(type="file" id="file-upload" style="display: none" multiple="true")
 
@@ -18,18 +18,31 @@ block content
 
   div.d-flex.flex-wrap.gap-3.mt-3.justify-content-center
     each file in data.slice(back ? 1 : 0)
-      a(href=file.url class="card" style="width: 10rem; border: none; text-decoration: none")
+      div(class="card" style="width: 10rem; border: none; text-decoration: none")
         if file.type === "directory"
-          i(class="fa-solid fa-folder card-img-top text-center" style="font-size: 7rem; color: #FFE333")
+          a(href=file.url)
+            i(class="fa-solid fa-folder card-img-top text-center" style="font-size: 7rem; color: #FFE333")
         else
           case checkFileType(file.name)
             when "image"
-              img(src=file.url class="rounded" style="aspect-ratio: 1/1; object-fit: cover")
+              a.mx-auto(href=file.url)
+                img(src=file.url class="rounded" style="aspect-ratio: 1/1; object-fit: cover; width: 7rem")
             when "video"
-              video(src=file.url class="rounded" style="aspect-ratio: 1/1; object-fit: cover")
+              a.mx-auto(href=file.url)
+                video(src=file.url class="rounded" style="aspect-ratio: 1/1; object-fit: cover; width: 7rem")
             when "file"
-              i(class="fa-solid fa-file card-img-top text-center" style="font-size: 7rem; color: #67A6F7")
+              a(href=file.url)
+                i(class="fa-solid fa-file card-img-top text-center" style="font-size: 7rem; color: #67A6F7")
 
-        p.card-body.text-center.small #{file.name}
-        
+        div.d-flex.w-75.mx-auto.mt-2
+          p.small.flex-grow-1.mb-0 #{file.name}
+          div.align-self-start.dropdown
+            button.btn.py-0.px-2(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+              i(class="fa-solid fa-ellipsis-vertical")
+            ul.dropdown-menu
+              li
+                button.dropdown-item(type='button' data-bs-toggle="modal" data-bs-target="#deleteDir" style="color: red" onclick="setDeletePath('" + file.path + "')")
+                  i(class="fa-solid fa-trash")
+                  span.ms-2 Eliminar
+
   script(src="js/uploadFile.js")
